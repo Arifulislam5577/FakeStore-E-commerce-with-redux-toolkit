@@ -41,6 +41,28 @@ const productSlice = createSlice({
 
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
+    toggleQty: (state, action) => {
+      const itemId = action.payload.id;
+      const item = state.cart.find((product) => product.id === itemId);
+
+      if (action.payload.sign === "plus") {
+        item.qty = item.qty + 1;
+      } else {
+        item.qty = item.qty - 1;
+      }
+    },
+    removeProduct: (state, action) => {
+      const itemId = action.payload;
+      state.cart = state.cart.filter((product) => product.id !== itemId);
+    },
+    calcTotal: (state) => {
+      state.amount = state.cart.reduce((sum, product) => sum + product.qty, 0);
+
+      state.total = state.cart.reduce(
+        (sum, product) => sum + product.price * product.qty * 1,
+        0
+      );
+    },
   },
 
   extraReducers: {
@@ -56,5 +78,6 @@ const productSlice = createSlice({
     },
   },
 });
-export const { addTocart } = productSlice.actions;
+export const { addTocart, toggleQty, removeProduct, calcTotal } =
+  productSlice.actions;
 export default productSlice.reducer;
